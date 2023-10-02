@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { authData, regData } from './dto/auth.dto';
+import { Body, Controller, Post } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { authData, regData } from './dto/auth.dto'
+
+class confirmCode {
+  id: number
+  code: string
+}
 
 @Controller('auth')
 export class AuthController {
@@ -15,5 +18,13 @@ export class AuthController {
   @Post('signup') 
   async register(@Body() data: regData) {
     return await this.authService.register(data);
+  }
+  @Post('validate') 
+  async validate(@Body('token') token: string) {
+    return await this.authService.validate(token);
+  }
+  @Post('confirm') 
+  async confirm(@Body() {id, code} : confirmCode) {
+    return await this.authService.confirmCode(code,id)
   }
 }
