@@ -1,12 +1,6 @@
 {
 	"version": 2,
-	"buildCommand": "prisma generate",
-	"builds": [
-			{
-					"src": "src/main.ts",
-					"use": "@vercel/node"
-			}
-	],
+	"buildCommand": "prisma generate && npm run start",
 	"routes": [
 			{
 					"src": "/(.*)",
