@@ -1,15 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { compare, hash } from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-// import codeGenerator from 'lib/codeGenerator'
-// import { MailService } from 'src/mailer/mail.service'
+import codeGenerator from 'src/lib/codeGenerator'
+import { MailService } from 'src/mailer/mail.service'
 import { PrismaService } from '../prisma.service'
 import { authData, regData } from './dto/auth.dto'
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService,
-    //  private mailer: MailService
+     private mailer: MailService
      ) {}
   private NotFound = new HttpException('Not Found', 404);
   private BadRequest = new HttpException('Bad Request', 400);
@@ -21,18 +21,18 @@ export class AuthService {
 
   private async createUser(userData: regData) {
     userData.password = await hash(userData.password,10);
-    // const randomCode = codeGenerator(10);
-    // const hashedRandomCode = await hash(randomCode, 10);
+    const randomCode = codeGenerator(10);
+    const hashedRandomCode = await hash(randomCode, 10);
     const user = await this.prisma.user.create({data: {
       username: userData.username,
       password: userData.password,
       email: userData.email,
       service: {
         confirmed : false,
-        // confirmCode: hashedRandomCode,
+        confirmCode: hashedRandomCode,
       }
     }})
-    // const mail = await this.mailer.sendEmail(userData.email, 'Code Confirm', randomCode)
+    const mail = await this.mailer.sendEmail(userData.email, 'Code Confirm', randomCode)
     return user;
   }
 
