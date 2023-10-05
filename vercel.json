@@ -1,4 +1,5 @@
 {
+	"buildCommand": "prisma generate",
 	"builds": [
 			{
 					"src": "src/main.ts",
