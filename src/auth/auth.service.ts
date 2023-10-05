@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { compare, hash } from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-import codeGenerator from 'lib/codeGenerator'
+// import codeGenerator from 'lib/codeGenerator'
 // import { MailService } from 'src/mailer/mail.service'
 import { PrismaService } from '../prisma.service'
 import { authData, regData } from './dto/auth.dto'
@@ -21,15 +21,15 @@ export class AuthService {
 
   private async createUser(userData: regData) {
     userData.password = await hash(userData.password,10);
-    const randomCode = codeGenerator(10);
-    const hashedRandomCode = await hash(randomCode, 10);
+    // const randomCode = codeGenerator(10);
+    // const hashedRandomCode = await hash(randomCode, 10);
     const user = await this.prisma.user.create({data: {
       username: userData.username,
       password: userData.password,
       email: userData.email,
       service: {
         confirmed : false,
-        confirmCode: hashedRandomCode,
+        // confirmCode: hashedRandomCode,
       }
     }})
     // const mail = await this.mailer.sendEmail(userData.email, 'Code Confirm', randomCode)
