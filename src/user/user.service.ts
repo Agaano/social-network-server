@@ -13,7 +13,7 @@ export class UserService {
   }
 
   async findUser(id: number) {
-    const user = this.prisma.user.findUnique({where: {id: id}})
+    const user = this.prisma.user.findUnique({where: {id: Number(id)}})
     return user;
   }
 }
