@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { compare, hash } from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-import codeGenerator from 'src/lib/codeGenerator'
-import { MailService } from 'src/mailer/mail.service'
+import codeGenerator from '../lib/codeGenerator'
+import { MailService } from '../mailer/mail.service'
 import { PrismaService } from '../prisma.service'
 import { authData, regData } from './dto/auth.dto'
 

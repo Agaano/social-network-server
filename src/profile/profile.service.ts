@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { HttpException } from '@nestjs/common/exceptions'
 import { unlink, writeFileSync } from 'fs'
 import { contentType } from 'mime-types'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaService } from '../prisma.service'
 import { ChangeUsernameDTO } from './dto/changeUsername.dto'
 
 @Injectable()
