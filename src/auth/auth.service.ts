@@ -8,9 +8,7 @@ import { authData, regData } from './dto/auth.dto'
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService,
-     private mailer: MailService
-     ) {}
+  constructor(private prisma: PrismaService, private mailer: MailService) {}
   private NotFound = new HttpException('Not Found', 404);
   private BadRequest = new HttpException('Bad Request', 400);
   private Unauthorized = new HttpException('Unauthorized', 401);
