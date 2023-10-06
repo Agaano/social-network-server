@@ -3,7 +3,7 @@ export default () => {
 	const array = __dirname.split(`\\`).reverse();
 	if (array.length === 1) {
 		const anotherarray = __dirname.split('/').reverse();
-		anotherarray[2] = 'src';
+		anotherarray[2] = 'dist';
 		anotherarray.reverse();
 		const newanotherarray = anotherarray.join('/');
 		return newanotherarray + '/';
