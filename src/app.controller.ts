@@ -3,7 +3,6 @@ import { Res } from '@nestjs/common/decorators/http/route-params.decorator'
 import { readFileSync } from 'fs'
 import { ServerResponse } from 'http'
 import { contentType } from 'mime-types'
-import uploadDirectory from '../uploads/avatars/uploadDirectory'
 
 @Controller()
 export class AppController {
@@ -16,7 +15,8 @@ export class AppController {
       response.end();
       return;
     }
-    const file = await readFileSync(uploadDirectory() + fileName);
+    const file = await readFileSync(__dirname + '/uploads/avatars' + fileName);
+    console.log(__dirname + '/uploads/avatars' + fileName);
     response.appendHeader('Content-Type', contType)
     response.write(file);
     response.end();
