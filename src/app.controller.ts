@@ -17,8 +17,8 @@ export class AppController {
       return;
     }
     const file = await readFileSync(__dirname + '/uploads/avatars/' + fileName);
-    console.log(__dirname + '/uploads/avatars/' + fileName)
-    console.log(uploadDirectory() + fileName);
+    console.log('Composite ' + __dirname + '/uploads/avatars/' + fileName)
+    console.log('Not composite ' + uploadDirectory() + fileName);
     console.log(__dirname + '/uploads/avatars/' + fileName === uploadDirectory() + fileName);
     response.appendHeader('Content-Type', contType)
     response.write(file);
