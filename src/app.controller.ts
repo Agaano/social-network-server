@@ -3,7 +3,7 @@ import { Res } from '@nestjs/common/decorators/http/route-params.decorator'
 import { readFileSync } from 'fs'
 import { ServerResponse } from 'http'
 import { contentType } from 'mime-types'
-import uploadDirectory from './uploads/avatars/uploadDirectory'
+import uploadDirectory from '../uploads/avatars/uploadDirectory'
 
 @Controller()
 export class AppController {
