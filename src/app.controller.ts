@@ -8,7 +8,10 @@ import { contentType } from 'mime-types'
 export class AppController {
   @Get("/files/:fileName")
   async getFile(@Res() response:ServerResponse, @Param("fileName") fileName: string) {
-    return window.location.href
+    return {
+      __dirname,
+      __filename
+    }
     const contType:string = contentType(fileName).toString();
     const supportedFormats = ['image/png', 'image/jpeg'];
     if (supportedFormats.includes(contType) === false) {
