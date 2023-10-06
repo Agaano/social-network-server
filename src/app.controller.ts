@@ -15,7 +15,7 @@ export class AppController {
       response.end();
       return;
     }
-    const file = await readFileSync(`../../uploads/avatars/${fileName}`);
+    const file = await readFileSync(`/uploads/avatars/${fileName}`);
     response.appendHeader('Content-Type', contType)
     response.write(file);
     response.end();

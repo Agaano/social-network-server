@@ -32,7 +32,7 @@ export class ProfileService {
 
 		const filename = `${Date.now()}-${file.originalname}`;
 		const fileStream = file.buffer;
-		await writeFileSync(`./uploads/avatars/${filename}`, fileStream);
+		await writeFileSync(`../uploads/avatars/${filename}`, fileStream);
 		const filepath = `http://localhost:8000/files/${filename}`;
 		await this.prisma.user.update({where: {id: Number(id)}, data: {avatar: filepath}})
 		return {
