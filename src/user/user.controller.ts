@@ -6,11 +6,8 @@ import { UserService } from './user.service'
 export class UserController {
 	constructor(private userService: UserService) {}
 	@Get('/:id')
-	async getUser(@Param('id') id: number) {
-		if (!(Number(id))) {
-			return new HttpException('Bad Request', 400);
-		}
-		const user = await this.userService.findUser(id);
+	async getUser(@Param('id') id: string) {
+		const user = !(Number(id)) ? await this.userService.findUserByLink(id) : await this.userService.findUser(Number(id));
 		if (!user) {
 			return new HttpException('Not Found', 404);
 		}

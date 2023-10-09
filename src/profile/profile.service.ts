@@ -3,7 +3,6 @@ import { HttpException } from '@nestjs/common/exceptions'
 import { unlink, writeFileSync } from 'fs'
 import { contentType } from 'mime-types'
 import { PrismaService } from '../prisma.service'
-import uploadDirectory from '../uploads/avatars/uploadDirectory'
 import { ChangeUsernameDTO } from './dto/changeUsername.dto'
 
 @Injectable()
@@ -22,19 +21,18 @@ export class ProfileService {
 		
 		const user = await this.prisma.user.findUnique({where: {id: Number(id)}});
 		if (user.avatar !== null) {
-			const userAvatarUrl = new URL(user.avatar);
-			const userAvatarName = userAvatarUrl.pathname.split('/')[2];
-			unlink(uploadDirectory() + userAvatarName, (err)=> {
-				if (err) {
-					console.log(err)
-				} else console.log(`Файл ${userAvatarName} успешно удалён`)
+			const userAvatarName = user.avatar.split('/')[2];
+			unlink('./uploads/avatars/' + userAvatarName, (err)=> {
+				if (!err) {
+					console.log(`Файл ${userAvatarName} успешно удалён`)
+				}
 			})
 		}
 
 		const filename = `${Date.now()}-${file.originalname}`;
 		const fileStream = file.buffer;
-		await writeFileSync(uploadDirectory() + filename, fileStream);
-		const filepath = `http://localhost:8000/files/${filename}`;
+		await writeFileSync('./uploads/avatars/' + filename, fileStream);
+		const filepath = `/files/${filename}`;
 		await this.prisma.user.update({where: {id: Number(id)}, data: {avatar: filepath}})
 		return {
 			filename,

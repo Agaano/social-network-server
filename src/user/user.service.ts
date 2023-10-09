@@ -12,6 +12,11 @@ export class UserService {
     return user
   }
 
+  async findUserByLink(link: string) {
+    const user = this.prisma.user.findUnique({where: {link: link}});
+    return user;
+  }
+
   async findUser(id: number) {
     const user = this.prisma.user.findUnique({where: {id: Number(id)}})
     return user;

@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated/client"
 }
 
 datasource db {
@@ -10,6 +9,7 @@ datasource db {
 
 model user {
   id                      Int          @id @default(autoincrement())
+  link                    String?      @unique
   username                String?      @unique @db.VarChar(100)
   email                   String       @unique @db.VarChar(100)
   password                String       @db.Text
@@ -17,6 +17,8 @@ model user {
   avatar                  String?      @db.Text
   friendship_UserToFriend friendship[] @relation("friendship_userTouser")
   friendship_FriendToUser friendship[] @relation("friendship_friendTouser")
+  post                    post[]
+  rating                  rating[]
 }
 
 model friendship {
@@ -29,4 +31,23 @@ model friendship {
 
   @@index([friend], map: "friend")
   @@index([user], map: "user")
+}
+
+model post {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  user   user     @relation(fields: [userId], references: [id])
+  title  String   @db.VarChar(50)
+  text   String   @db.Text
+  date   DateTime @default(now()) @db.Timestamp(0)
+  rating rating[]
+}
+
+model rating {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   user   @relation(fields: [userId], references: [id])
+  postId Int
+  post   post   @relation(fields: [postId], references: [id])
+  type   String
 }

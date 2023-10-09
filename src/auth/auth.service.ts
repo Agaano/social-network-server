@@ -21,10 +21,22 @@ export class AuthService {
     userData.password = await hash(userData.password,10);
     const randomCode = codeGenerator(10);
     const hashedRandomCode = await hash(randomCode, 10);
+    const isExistWithSameLink = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          {username: userData.username},
+          {link: userData.username.trim().toLowerCase()}
+        ]
+      }
+    })
+    if (isExistWithSameLink.length > 0) {
+      return this.Conflict;
+    }
     const user = await this.prisma.user.create({data: {
       username: userData.username,
       password: userData.password,
       email: userData.email,
+      link: userData.username.trim().toLowerCase(),
       service: {
         confirmed : false,
         confirmCode: hashedRandomCode,
