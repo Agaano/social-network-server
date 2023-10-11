@@ -34,9 +34,19 @@ export class FriendsService {
 				friend: userId,
 				type: 'Friendship',
 			}})
+			const newRoom = await this.prisma.room.create({data: {
+				name: `${user.username} ${friend.username}`,
+				membership: {
+					create: [
+						{userId: user.id},
+						{userId: friend.id}
+					]
+				}
+			}})
 			return {
 				userToFriendFriendship,
-				friendToUserFriendship
+				friendToUserFriendship,
+				newRoom,
 			};
 		}
 		console.log('User ' + user.username + ' have just send friendship application to ' + friend.username);

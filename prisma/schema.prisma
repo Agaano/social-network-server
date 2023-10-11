@@ -19,6 +19,8 @@ model user {
   friendship_FriendToUser friendship[] @relation("friendship_friendTouser")
   post                    post[]
   rating                  rating[]
+  membership              membership[]
+  message                 message[]
 }
 
 model friendship {
@@ -50,4 +52,29 @@ model rating {
   postId Int
   post   post   @relation(fields: [postId], references: [id])
   type   String
+}
+
+model room {
+  id         Int          @id @default(autoincrement())
+  name       String
+  membership membership[]
+  message    message[]
+}
+
+model membership {
+  id     Int  @id @default(autoincrement())
+  roomId Int
+  room   room @relation(fields: [roomId], references: [id])
+  userId Int
+  user   user @relation(fields: [userId], references: [id])
+}
+
+model message {
+  id      Int      @id @default(autoincrement())
+  date    DateTime @default(now()) @db.Timestamp(0)
+  content String
+  userId  Int
+  user    user     @relation(fields: [userId], references: [id])
+  roomId  Int
+  room    room     @relation(fields: [roomId], references: [id])
 }
