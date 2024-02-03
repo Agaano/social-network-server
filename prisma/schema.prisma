@@ -11,6 +11,7 @@ model user {
   id                      Int          @id @default(autoincrement())
   link                    String?      @unique
   username                String?      @unique @db.VarChar(100)
+  usercolor               String?      @db.VarChar(10)
   email                   String       @unique @db.VarChar(100)
   password                String       @db.Text
   service                 Json

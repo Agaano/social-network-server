@@ -1,9 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { HttpException } from '@nestjs/common/exceptions'
-import { verify } from 'jsonwebtoken'
-import { CreatePostDto } from './dto/create-post.dto'
-import { UpdatePostDto } from './dto/update-post.dto'
-import { PostsService } from './posts.service'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions';
+import { verify } from 'jsonwebtoken';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
@@ -14,8 +22,8 @@ export class PostsController {
     if (!createPostDto.token) {
       return;
     }
-    const idObj = verify(createPostDto.token,'qwerty');
-    const {id} = JSON.parse(JSON.stringify(idObj));
+    const idObj = verify(createPostDto.token, 'qwerty');
+    const { id } = JSON.parse(JSON.stringify(idObj));
     if (!id) {
       return new HttpException('Bad Request', 400);
     }
@@ -27,8 +35,19 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get('/findOne/:id')
+  async findOneById(@Param('id') id: number) {
+    if (!id) return new HttpException('Bad Request', 400);
+    return await this.postsService.findOne(+id);
+  }
+
+  @Post('/findOne')
+  async findOne(@Body('token') token: string) {
+    const idObj = verify(token, 'qwerty');
+    const { id } = JSON.parse(JSON.stringify(idObj));
+    if (!id) {
+      return new HttpException('Bad Request', 400);
+    }
     return await this.postsService.findOne(+id);
   }
 
@@ -42,13 +61,21 @@ export class PostsController {
     return await this.postsService.remove(+id);
   }
 
-  @Post('/like') 
-  async tooglelike(@Body('userId') userId: number, @Body('postId') postId: number) {
+  @Post('/like')
+  async tooglelike(
+    @Body('userId') userId: number,
+    @Body('postId') postId: number,
+  ) {
     return await this.postsService.toogleLike(userId, postId);
   }
 
+  @Get('/post/:id')
+  async getPost(@Param('id') id: string) {
+    return await this.postsService.findPost(+id);
+  }
+
   @Get('/likes/:id')
-  async getLikes(@Param('id') id : string) {
+  async getLikes(@Param('id') id: string) {
     return await this.postsService.getLikes(+id);
   }
 }

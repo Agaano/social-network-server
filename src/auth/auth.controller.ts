@@ -1,10 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { authData, regData } from './dto/auth.dto'
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { authData, regData } from './dto/auth.dto';
 
 class confirmCode {
-  id: number
-  code: string
+  id: number;
+  code: string;
 }
 
 @Controller('auth')
@@ -13,18 +13,24 @@ export class AuthController {
 
   @Post('signin')
   async auth(@Body() data: authData) {
-    return await this.authService.auth(data);
+    const { token } = await this.authService.auth(data);
+    return token;
   }
-  @Post('signup') 
+
+  @Post('signup')
   async register(@Body() data: regData) {
     return await this.authService.register(data);
   }
-  @Post('validate') 
+  @Post('validate')
   async validate(@Body('token') token: string) {
-    return await this.authService.validate(token);
+    const data = await this.authService.validate(token);
+    return data;
   }
-  @Post('confirm') 
-  async confirm(@Body() {id, code} : confirmCode) {
-    return await this.authService.confirmCode(code,id)
+  @Post('confirm')
+  async confirm(@Body() { id, code }: confirmCode) {
+    return await this.authService.confirmCode(code, id);
   }
+
+  // @Get('unauthorize')
+  // unauthorize(@Req)
 }
