@@ -16,6 +16,7 @@ model user {
   password                String       @db.Text
   service                 Json
   avatar                  String?      @db.Text
+  isAdmin                 Boolean      @default(false)
   friendship_UserToFriend friendship[] @relation("friendship_userTouser")
   friendship_FriendToUser friendship[] @relation("friendship_friendTouser")
   post                    post[]

@@ -77,7 +77,9 @@ export class AppGateway implements OnGatewayInit {
     @ConnectedSocket() client: Socket,
     @MessageBody() message: IMessage,
   ) {
-    console.log('trying to send message');
+    console.log(client.id + ' trying to send message');
+    console.log(client.rooms);
+    console.log(message.lobby);
     const user = JSON.parse(JSON.stringify(verify(message.token, 'qwerty'))).id;
     if (!user) return;
     if (!this.checkIsInThisRoom(client, message.lobby.toString())) return;
@@ -123,6 +125,17 @@ export class AppGateway implements OnGatewayInit {
     });
   }
 
+  @SubscribeMessage('leaveAllRooms') 
+  async leaveRooms(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() token: string
+  ) {
+    const userDialogues = await this.rooms.findOne(token);
+    userDialogues.map((dialogue: any) => {
+      client.leave(dialogue.id.toString());
+    });
+  }
+
   @SubscribeMessage('joinTheRoom')
   async handleJoin(
     @ConnectedSocket() client: Socket,
@@ -165,6 +178,7 @@ export class AppGateway implements OnGatewayInit {
     const userDialogues = await this.rooms.findOne(token);
     userDialogues.map((dialogue: any) => {
       client.join(dialogue.id.toString());
+      console.log(client.id + " has just joined " + dialogue.name)
     });
   }
 
@@ -193,7 +207,7 @@ export class AppGateway implements OnGatewayInit {
 
   @SubscribeMessage('connection')
   handleConnection(@ConnectedSocket() client: Socket) {
-    // console.log(client.id + ' connection');
+    console.log(client.id + ' connection');
     client.emit('connection', 'Connected!');
     client.emit('message', 'message');
   }
