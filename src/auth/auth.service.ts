@@ -83,6 +83,9 @@ export class AuthService {
         email: user.email,
       };
     }
+    if (user.service['blocked']) {
+      throw new HttpException("User has been blocked", 451);
+    }
     const token = jwt.sign({ id: user.id }, 'qwerty', { expiresIn: '24h' });
     return { token };
   }
@@ -98,6 +101,14 @@ export class AuthService {
       return this.InternalError;
     }
     return user;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.findUserByEmail(email);
+    if (!user) return this.NotFound;
+    const randomCode = codeGenerator(10)
+    this.mailer.sendEmail(user.email, "Password Change", randomCode)
+    return randomCode;
   }
 
   async confirmCode(code: string, id: number) {
@@ -120,6 +131,13 @@ export class AuthService {
     }
   }
 
+  async changePassword(newPassword: string, userId: string) {
+    const hashedPassword = await hash(newPassword, 10)
+    const user = await this.findUserByEmail(userId);
+    if (!user) return this.NotFound
+    await this.prisma.user.update({where: {id: user.id}, data: {password: hashedPassword}})
+  }
+
   private transformToObject(token) {
     return JSON.parse(JSON.stringify(token));
   }
@@ -135,9 +153,12 @@ export class AuthService {
       if (!user) {
         throw this.NotFound;
       }
+      if (user.service['blocked']) {
+        return new HttpException("User has been blocked", 451);
+      }
       return { user, token };
     } catch (error) {
-      throw error;
+      return error;
     }
   }
 }
