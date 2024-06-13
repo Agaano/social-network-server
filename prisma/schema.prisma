@@ -44,6 +44,7 @@ model post {
   title  String   @db.VarChar(50)
   text   String   @db.Text
   date   DateTime @default(now()) @db.Timestamp(0)
+  image  String?   @db.VarChar(150)
   rating rating[]
 }
 

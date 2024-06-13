@@ -82,7 +82,10 @@ export class RoomsController {
   }
 
   @Post('join')
-  async join(@Body('userId') id: string, @Body('roomId') roomId: string) {
+  async join(@Body('token') token: string, @Body('roomId') roomId: string) {
+    const userToken = verify(token, 'qwerty');
+    const id = userToken['id'];
+    if (!id) return;
     const newMembership = await this.prisma.membership.create({
       data: {
         userId: Number(id),

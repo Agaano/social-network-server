@@ -6,12 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
 import { verify } from 'jsonwebtoken';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsService } from './posts.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostsController {
@@ -77,5 +80,15 @@ export class PostsController {
   @Get('/likes/:id')
   async getLikes(@Param('id') id: string) {
     return await this.postsService.getLikes(+id);
+  }
+
+
+  @Post('upload/photo')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPostPhoto(@UploadedFile() file: Express.Multer.File) {
+    if (file.size > (1000*1000*5)) {
+      return new HttpException('Too Large', 400)
+    }
+    return this.postsService.upload(file);
   }
 }

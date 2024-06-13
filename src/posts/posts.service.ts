@@ -3,6 +3,8 @@ import { HttpException } from '@nestjs/common/exceptions';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { contentType } from 'mime-types';
+import { unlink, writeFileSync } from 'fs';
 
 @Injectable()
 export class PostsService {
@@ -26,6 +28,7 @@ export class PostsService {
         title: createPostDto.title,
         text: createPostDto.text,
         userId: id,
+        image: createPostDto.image
       },
     });
     return post;
@@ -80,5 +83,24 @@ export class PostsService {
       select: { userId: true },
     });
     return likes;
+  }
+
+
+  async upload(file: Express.Multer.File) {
+    const supportedTypes = ['image/png', 'image/jpeg'];
+    if (
+      supportedTypes.includes(contentType(file.originalname).toString()) ===
+      false
+    ) {
+      return new HttpException('Unsupported format', 415);
+    }
+    const filename = `${Date.now()}-${file.originalname}`;
+    const fileStream = file.buffer;
+    writeFileSync('./uploads/avatars/' + filename, fileStream);
+    const filepath = `/files/${filename}`;
+    return {
+      filename,
+      filepath,
+    };
   }
 }

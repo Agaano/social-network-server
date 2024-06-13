@@ -14,7 +14,7 @@ export class ProfileController {
     }
   @Post('upload/photo')
   @UseInterceptors(FileInterceptor('file'))
-    async upload(@UploadedFile() file: Express.Multer.File, @Body('token') token: string) {
+    async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Body('token') token: string) {
       const idObj = verify(token, 'qwerty');
       if (!idObj) {
         return;
